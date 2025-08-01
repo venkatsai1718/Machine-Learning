@@ -9,7 +9,7 @@ import os
 SIMILARITY_FILE_ID = "1Z3i_wogtNwHJYBdgnOYkJGf35Fr1YKxL"
 @st.cache_data
 def download_similarity():
-    url = 'https://drive.google.com/uc?id={FILE_ID}'.format(SIMILARITY_FILE_ID)
+    url = 'https://drive.google.com/uc?id={}'.format(SIMILARITY_FILE_ID)
     output = 'similarity.pkl'
     if not os.path.exists(output):
         gdown.download(url, output, quiet=False)
@@ -18,7 +18,7 @@ def download_similarity():
 MOVIES_FILE_ID = "1qxoqQ9efwEJVLjbR5hbQhAyGH4vOgU4z"
 @st.cache_data
 def download_movies():
-    url = 'https://drive.google.com/uc?id={FILE_ID}'.format(MOVIES_FILE_ID)
+    url = 'https://drive.google.com/uc?id={}'.format(MOVIES_FILE_ID)
     output = 'movies_dict.pkl'
     if not os.path.exists(output):
         gdown.download(url, output, quiet=False)
