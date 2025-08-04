@@ -6,11 +6,20 @@ import requests
 import gdown
 import os
 
-SIMILARITY_FILE_ID = "1Z3i_wogtNwHJYBdgnOYkJGf35Fr1YKxL"
+BOW_SIMILARITY_FILE_ID = "1bXidFfCGzqpUBXLUkQSWjCIMV_ieKWqR"
 @st.cache_data
-def download_similarity():
-    url = 'https://drive.google.com/uc?id={}'.format(SIMILARITY_FILE_ID)
-    output = 'similarity.pkl'
+def download_bow_similarity():
+    url = f'https://drive.google.com/uc?id={BOW_SIMILARITY_FILE_ID}'
+    output = 'bow_similarity.pkl'
+    if not os.path.exists(output):
+        gdown.download(url, output, quiet=False)
+    return output
+
+TFIDF_SIMILARITY_FILE_ID = "1CJz-HpvSsXr9cZfG0NLXvKHITocC_MsU"
+@st.cache_data
+def download_tfidf_similarity():
+    url = f'https://drive.google.com/uc?id={TFIDF_SIMILARITY_FILE_ID}'
+    output = 'tfidf_similarity.pkl'
     if not os.path.exists(output):
         gdown.download(url, output, quiet=False)
     return output
@@ -18,7 +27,7 @@ def download_similarity():
 MOVIES_FILE_ID = "1qxoqQ9efwEJVLjbR5hbQhAyGH4vOgU4z"
 @st.cache_data
 def download_movies():
-    url = 'https://drive.google.com/uc?id={}'.format(MOVIES_FILE_ID)
+    url = f'https://drive.google.com/uc?id={MOVIES_FILE_ID}'
     output = 'movies_dict.pkl'
     if not os.path.exists(output):
         gdown.download(url, output, quiet=False)
@@ -45,17 +54,22 @@ def recommend(movie):
         
     return r_movies, r_posters
 
+st.title('Movie Recommernder System')
 
 movies_path = download_movies()
 movies_dict = pickle.load(open(movies_path, 'rb'))
 movies = pd.DataFrame(movies_dict)
 
-similarity_path = download_similarity()
-similarity = pickle.load(open(similarity_path, 'rb'))
-
-st.title('Movie Recommernder System')
-
 option = st.selectbox('Select a movie', movies['title'].values)
+
+vectorizer = st.selectbox('Select Vectorizer', ['Bag of Words', 'TF-IDF'])
+if vectorizer == 'Bag of Words':
+    similarity_path = download_bow_similarity()
+    similarity = pickle.load(open(similarity_path, 'rb'))
+else:
+    similarity_path = download_tfidf_similarity()
+    similarity = pickle.load(open(similarity_path, 'rb'))    
+
 
 if st.button('Recommend'):
     names, posters = recommend(option)
